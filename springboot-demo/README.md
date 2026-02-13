@@ -17,7 +17,7 @@ cd springboot-demo
 2. 啟動應用程式：
 
 ```bash
-mvn spring-boot:run
+.\\gradlew.bat bootRun
 ```
 
 3. 查看 Swagger UI：

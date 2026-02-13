@@ -1,12 +1,18 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.1.6"
-    id("io.spring.dependency-management") version "1.1.4"
+    id("org.springframework.boot") version "3.3.5"
+    id("io.spring.dependency-management") version "1.1.6"
 }
 
 group = "com.example"
 version = "0.1.0"
-java.sourceCompatibility = JavaVersion.VERSION_21
+java {
+    sourceCompatibility = JavaVersion.VERSION_23
+    targetCompatibility = JavaVersion.VERSION_23
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(23))
+    }
+}
 
 repositories {
     mavenCentral()

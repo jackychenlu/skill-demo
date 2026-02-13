@@ -1,12 +1,18 @@
 # Gradle
 .gradle/
 build/
-gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
 
 # IDE
 .idea/
 *.iml
 .vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 *.swp
 *.swo
 *~
@@ -18,6 +24,7 @@ Thumbs.db
 # Java
 *.class
 *.jar
+!gradle/wrapper/*.jar
 *.war
 *.ear
 *.zip
@@ -31,3 +38,10 @@ bin/
 
 # Logs
 *.log
+logs/
+
+# Spring Boot
+spring-boot-devtools.properties
+
+# Test results
+*.hprof
