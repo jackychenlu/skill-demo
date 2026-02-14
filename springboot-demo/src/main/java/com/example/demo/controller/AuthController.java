@@ -2,6 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.TokenValidationResponse;
 import com.example.demo.security.TokenProvider;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication", description = "Endpoints for token validation and authentication")
 public class AuthController {
 
     private final TokenProvider tokenProvider;
@@ -31,6 +35,11 @@ public class AuthController {
      * @return 200 OK if authenticated, 401 Unauthorized otherwise
      */
     @GetMapping("/check")
+    @Operation(
+        summary = "Check authentication status",
+        description = "Verifies if the provided token is valid",
+        security = @SecurityRequirement(name = "bearerAuth")
+    )
     public ResponseEntity<TokenValidationResponse> checkAuth() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         
@@ -55,6 +64,10 @@ public class AuthController {
      * @return response indicating if token is valid
      */
     @PostMapping("/validate")
+    @Operation(
+        summary = "Validate token",
+        description = "Validates a token without requiring authentication. Useful for testing token validity."
+    )
     public ResponseEntity<TokenValidationResponse> validateToken(
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
         

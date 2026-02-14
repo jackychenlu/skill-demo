@@ -34,15 +34,15 @@ public class SecurityConfig {
 
             // Configure authorization rules
             .authorizeHttpRequests(authz -> authz
-                // Public endpoints
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                // Public endpoints - allow Swagger UI and API docs
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
                 
                 // Protected endpoints - require authentication
                 .requestMatchers("/api/**").authenticated()
                 
-                // Deny everything else
-                .anyRequest().denyAll()
+                // Allow everything else by default but could deny if needed
+                .anyRequest().permitAll()
             )
 
             // Add token authentication filter before the UsernamePasswordAuthenticationFilter

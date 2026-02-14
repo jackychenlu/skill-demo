@@ -2,6 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.ServerStatusResponse;
 import com.example.demo.service.ServerStatusService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/server-status")
+@Tag(name = "Server Status", description = "Endpoints for monitoring server health and status")
 public class ServerStatusController {
     
     private final ServerStatusService serverStatusService;
@@ -31,6 +35,11 @@ public class ServerStatusController {
      */
     @GetMapping
     @PreAuthorize("isAuthenticated()")
+    @Operation(
+        summary = "Get server status",
+        description = "Returns the current server status including uptime and memory information",
+        security = @SecurityRequirement(name = "bearerAuth")
+    )
     public ResponseEntity<ServerStatusResponse> getServerStatus() {
         ServerStatusResponse status = serverStatusService.getStatus();
         return ResponseEntity.ok(status);
@@ -44,6 +53,11 @@ public class ServerStatusController {
      */
     @GetMapping("/uptime")
     @PreAuthorize("isAuthenticated()")
+    @Operation(
+        summary = "Get server uptime",
+        description = "Returns the server uptime in milliseconds",
+        security = @SecurityRequirement(name = "bearerAuth")
+    )
     public ResponseEntity<String> getUptime() {
         long uptime = serverStatusService.getUptime();
         return ResponseEntity.ok(String.format("{\"uptime\": %d}", uptime));
