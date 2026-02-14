@@ -66,7 +66,8 @@ public class AuthController {
     @PostMapping("/validate")
     @Operation(
         summary = "Validate token",
-        description = "Validates a token without requiring authentication. Useful for testing token validity."
+        description = "Validates a token by extracting it from Authorization header. Useful for testing token validity.",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     public ResponseEntity<TokenValidationResponse> validateToken(
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
