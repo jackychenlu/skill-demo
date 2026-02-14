@@ -22,11 +22,15 @@ dependencies {
     // Spring Boot Web
     implementation("org.springframework.boot:spring-boot-starter-web")
 
+    // Spring Security
+    implementation("org.springframework.boot:spring-boot-starter-security")
+
     // OpenAPI/Swagger Documentation
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 
     // Spring Boot Test (includes JUnit 5, Mockito, AssertJ, etc.)
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.withType<JavaCompile> {

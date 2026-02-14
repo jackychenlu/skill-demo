@@ -4,7 +4,8 @@ import com.example.demo.dto.ServerStatusResponse;
 import com.example.demo.service.ServerStatusService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,9 +18,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Web layer tests for ServerStatusController using MockMvc.
+ * Integration tests for ServerStatusController using MockMvc.
+ * Tests token-based authentication and endpoint behavior.
  */
-@WebMvcTest(ServerStatusController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class ServerStatusControllerTest {
     
     @Autowired
@@ -27,6 +30,8 @@ class ServerStatusControllerTest {
     
     @MockBean
     private ServerStatusService serverStatusService;
+
+    private static final String VALID_TOKEN = "Bearer demo-secret-key-change-in-production";
     
     @Test
     void getServerStatus_returns200Ok() throws Exception {
@@ -45,7 +50,8 @@ class ServerStatusControllerTest {
         
         // Act & Assert
         mockMvc.perform(get("/api/server-status")
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", VALID_TOKEN))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status", equalTo("UP")))
             .andExpect(jsonPath("$.version", equalTo("1.0.0")))
@@ -55,6 +61,14 @@ class ServerStatusControllerTest {
             .andExpect(jsonPath("$.totalMemory", greaterThan(0)))
             .andExpect(jsonPath("$.freeMemory", greaterThanOrEqualTo(0)))
             .andExpect(jsonPath("$.usedMemory", greaterThanOrEqualTo(0)));
+    }
+    
+    @Test
+    void getServerStatus_returns403WithoutToken() throws Exception {
+        // Act & Assert - Without valid token, should get 403 Forbidden
+        mockMvc.perform(get("/api/server-status")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isForbidden());
     }
     
     @Test
@@ -73,7 +87,8 @@ class ServerStatusControllerTest {
         when(serverStatusService.getStatus()).thenReturn(response);
         
         // Act & Assert
-        mockMvc.perform(get("/api/server-status"))
+        mockMvc.perform(get("/api/server-status")
+                .header("Authorization", VALID_TOKEN))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").exists())
             .andExpect(jsonPath("$.status").exists())
@@ -93,7 +108,8 @@ class ServerStatusControllerTest {
         when(serverStatusService.getUptime()).thenReturn(uptime);
         
         // Act & Assert
-        mockMvc.perform(get("/api/server-status/uptime"))
+        mockMvc.perform(get("/api/server-status/uptime")
+                .header("Authorization", VALID_TOKEN))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("\"uptime\": 12345")));
     }
@@ -114,7 +130,8 @@ class ServerStatusControllerTest {
         when(serverStatusService.getStatus()).thenReturn(response);
         
         // Act & Assert
-        mockMvc.perform(get("/api/server-status"))
+        mockMvc.perform(get("/api/server-status")
+                .header("Authorization", VALID_TOKEN))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
