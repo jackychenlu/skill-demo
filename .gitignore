@@ -1,0 +1,31 @@
+.agents/tools/
+.agents/skills/
+
+# Python caches / virtual envs
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Java / build outputs
+.gradle/
+build/
+target/
+out/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

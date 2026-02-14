@@ -1,7 +1,0 @@
-{
-    "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "java.home": "C:\\Users\\jacky\\.jdk\\jdk-21.0.8",
-    "java.import.gradle.enabled": true,
-    "java.import.maven.enabled": false
-}
