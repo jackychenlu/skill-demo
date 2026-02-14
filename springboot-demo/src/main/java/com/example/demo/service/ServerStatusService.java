@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.ServerStatusResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ServerStatusService {
+
+    private static final Logger log = LoggerFactory.getLogger(ServerStatusService.class);
     
     @Value("${app.version:0.1.0}")
     private String appVersion;
@@ -17,6 +21,7 @@ public class ServerStatusService {
     
     public ServerStatusService() {
         this.startTime = System.currentTimeMillis();
+        log.info("ServerStatusService initialized at timestamp: {}", startTime);
     }
     
     /**
@@ -25,15 +30,19 @@ public class ServerStatusService {
      * @return ServerStatusResponse containing status and metrics
      */
     public ServerStatusResponse getStatus() {
+        log.debug("Retrieving server status");
         Runtime runtime = Runtime.getRuntime();
         
-        return ServerStatusResponse.of(
+        ServerStatusResponse response = ServerStatusResponse.of(
             appVersion,
             startTime,
             runtime.availableProcessors(),
             runtime.totalMemory(),
             runtime.freeMemory()
         );
+        
+        log.debug("Server status retrieved: version={}, uptime={}ms", appVersion, response.uptime());
+        return response;
     }
     
     /**

@@ -5,6 +5,8 @@ import com.example.demo.service.ServerStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/server-status")
 @Tag(name = "Server Status", description = "Endpoints for monitoring server health and status")
 public class ServerStatusController {
+
+    private static final Logger log = LoggerFactory.getLogger(ServerStatusController.class);
     
     private final ServerStatusService serverStatusService;
     
@@ -41,6 +45,7 @@ public class ServerStatusController {
         security = @SecurityRequirement(name = "bearerAuth")
     )
     public ResponseEntity<ServerStatusResponse> getServerStatus() {
+        log.debug("Server status requested");
         ServerStatusResponse status = serverStatusService.getStatus();
         return ResponseEntity.ok(status);
     }
@@ -59,6 +64,7 @@ public class ServerStatusController {
         security = @SecurityRequirement(name = "bearerAuth")
     )
     public ResponseEntity<String> getUptime() {
+        log.debug("Server uptime requested");
         long uptime = serverStatusService.getUptime();
         return ResponseEntity.ok(String.format("{\"uptime\": %d}", uptime));
     }

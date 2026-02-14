@@ -38,8 +38,10 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
                 
-                // Public API endpoints - token validation endpoint
-                .requestMatchers("/api/auth/validate").permitAll()
+                // Public API endpoints - token validation and auth check endpoints
+                // Allow /api/auth/validate and /api/auth/check without authentication
+                // This allows users to check their auth status or validate a token
+                .requestMatchers("/api/auth/validate", "/api/auth/check").permitAll()
                 
                 // Protected endpoints - require authentication
                 .requestMatchers("/api/**").authenticated()

@@ -1,5 +1,7 @@
 package com.example.demo.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
      * Handle validation errors from @Valid annotations.
@@ -40,6 +44,8 @@ public class GlobalExceptionHandler {
                     error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "Invalid value",
                     (existing, replacement) -> existing
                 ));
+        
+        log.warn("Validation failed for request: {} - errors: {}", request.getDescription(false), fieldErrors);
         
         ApiError error = new ApiError(
             HttpStatus.BAD_REQUEST.value(),
@@ -64,6 +70,8 @@ public class GlobalExceptionHandler {
             RuntimeException ex,
             WebRequest request) {
         
+        log.error("Unexpected runtime exception for request: {}", request.getDescription(false), ex);
+        
         ApiError error = new ApiError(
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
             "An unexpected error occurred",
@@ -86,6 +94,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleIllegalArgumentException(
             IllegalArgumentException ex,
             WebRequest request) {
+        
+        log.warn("Illegal argument exception for request: {} - message: {}", request.getDescription(false), ex.getMessage());
         
         ApiError error = new ApiError(
             HttpStatus.BAD_REQUEST.value(),

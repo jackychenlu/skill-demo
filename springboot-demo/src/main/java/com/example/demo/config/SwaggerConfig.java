@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.info.Info;
@@ -17,9 +18,13 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         SecurityScheme securityScheme = new SecurityScheme()
-            .description("Bearer token authentication using UUID tokens from application.properties")
+            .type(SecurityScheme.Type.HTTP)
             .scheme("bearer")
-            .bearerFormat("UUID");
+            .bearerFormat("UUID")
+            .description("Bearer token authentication using UUID tokens from application.properties");
+        
+        Components components = new Components()
+            .addSecuritySchemes("bearerAuth", securityScheme);
         
         return new OpenAPI()
             .info(new Info()
@@ -27,8 +32,7 @@ public class SwaggerConfig {
                 .description("API for monitoring server status with Bearer token authentication")
                 .version("1.0.0"))
             .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
-            .components(new io.swagger.v3.oas.models.Components()
-                .addSecuritySchemes("bearerAuth", securityScheme));
+            .components(components);
     }
 }
 

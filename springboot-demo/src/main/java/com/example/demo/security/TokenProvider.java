@@ -1,5 +1,7 @@
 package com.example.demo.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TokenProvider {
+
+    private static final Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
     @Value("${api.secret.key:}")
     private String secretKey;
@@ -25,11 +29,13 @@ public class TokenProvider {
      */
     public boolean validateToken(String token) {
         if (token == null || token.isBlank()) {
+            log.debug("Token validation failed: token is null or blank");
             return false;
         }
 
         // Check if token matches the secret key
         if (!secretKey.isBlank() && token.equals(secretKey)) {
+            log.debug("Token validated successfully using secret key");
             return true;
         }
 
@@ -38,11 +44,13 @@ public class TokenProvider {
             String[] allowedTokens = allowedTokensConfig.split(",");
             for (String allowed : allowedTokens) {
                 if (token.equals(allowed.strip())) {
+                    log.debug("Token validated successfully using allowed tokens list");
                     return true;
                 }
             }
         }
 
+        log.debug("Token validation failed: token not found in secret key or allowed tokens");
         return false;
     }
 

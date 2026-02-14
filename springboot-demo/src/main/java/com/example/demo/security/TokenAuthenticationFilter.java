@@ -4,6 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +22,8 @@ import java.util.ArrayList;
  */
 @Component
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
 
     private final TokenProvider tokenProvider;
 
@@ -48,6 +52,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                         new ArrayList<>() // No specific roles for API token auth
                     );
                 SecurityContextHolder.getContext().setAuthentication(auth);
+                log.debug("Authentication successful for request: {} {}", request.getMethod(), request.getRequestURI());
+            } else {
+                log.debug("Authentication failed for request: {} {}", request.getMethod(), request.getRequestURI());
             }
         }
 
