@@ -1,0 +1,7 @@
+{
+    "skillPaths": [
+        "./skills",
+        "./.agent/skills"
+    ],
+    "autoLoadSkills": true
+}
